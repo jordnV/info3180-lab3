@@ -25,10 +25,55 @@ def about():
     """Render the website's about page."""
     return render_template('about.html')
 
+@app.route('/contact')
+def contact():
+  return render_template('contact.html')
 
-###
+@app.route('/delivery', methods=['POST'])
+def sendemail ():
+ ## if request.method==["GET"]: 
+   ## return render_template('contact.html')
+  ##else: 
+    import smtplib
+  
+    fromname = request.form['name']
+    fromaddr = request.form['email']
+    toname = 'Jordanne'
+    toaddr = 'sweetjordie@hotmail.com'
+    subject = request.form['subject']
+    msg = request.form['message']
+    message = """From: {} <{}>
+    To: {} <{}>
+    Subject: {}
+
+    {}
+    """
+    messagetosend = message.format(
+                                fromname,
+                                fromaddr,
+                                toname,
+                                toaddr,
+                                subject,
+                                msg)
+
+    # Credentials (if needed)
+    username = 'jord.vanessa@gmail.com'
+    password = 'qcciwbpgniyummve'
+
+    # The actual mail send
+    server = smtplib.SMTP('smtp.gmail.com:587')
+    server.starttls()
+    server.login(username,password)
+    server.sendmail(fromaddr, toaddr, messagetosend)
+    server.quit()
+    return render_template('contact.html')
+
+
+  ###
 # The functions below should be applicable to all Flask apps.
 ###
+
+
 
 @app.route('/<file_name>.txt')
 def send_text_file(file_name):
